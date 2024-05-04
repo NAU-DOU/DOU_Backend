@@ -19,24 +19,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
           message: string | string[];
         };
 
-    // 로그
-    const errorLogRes = {
-      code: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      method: request.method,
-      message: error,
-    };
-
-    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error({
-        err: errorLogRes,
-        args: { request, response },
-      });
-    } else {
-      this.logger.warn({ err: errorLogRes, undefined });
-    }
-
     // 응답
     if (typeof error === 'string') {
       response.status(status).json({
