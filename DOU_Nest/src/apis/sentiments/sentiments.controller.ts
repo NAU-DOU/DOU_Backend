@@ -14,7 +14,7 @@ export class SentimentsController {
   getAll(@Res() response: Response) {
     response.status(200).json({
       ...statusCode.SUCCESS,
-      data: 'SENTIMENT!',
+      data: process.env.SENTIMENT_URL,
     });
   }
 

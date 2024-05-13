@@ -5,8 +5,7 @@ import json
 import os
 import sentencepiece as spm
 
-from model import tokenization_kobert
-
+from . import tokenization_kobert
 from transformers import BertTokenizer, BertForSequenceClassification, PreTrainedTokenizer, TFBertModel
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
@@ -22,7 +21,7 @@ LABEL_COLUMN = "상황"
 tokenizer = tokenization_kobert.KoBertTokenizer.from_pretrained('monologg/kobert')  # pretrained 모델을 불러오기 (kobert의 monologg)
 
 def get_csv_data():
-    csv_data = pd.read_csv('instance\감정분류데이터셋.csv', encoding='cp949')
+    csv_data = pd.read_csv('./instance/감정분류데이터셋.csv', encoding='cp949')
 
     csv_data.loc[(csv_data['상황']=="happiness"), '상황'] = 0
     csv_data.loc[(csv_data['상황']=="surprise"), '상황'] = 1

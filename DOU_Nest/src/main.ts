@@ -10,7 +10,7 @@ async function bootstrap(): Promise<string> {
     bufferLogs: true,
     logger: winstonLogger,
   });
-  await app.listen(3000);
+  await app.listen(process.env.NEST_PORT || 3000, '0.0.0.0');
 
   return app.getUrl();
 }

@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, request, jsonify
 from model.predict import evaluation_predict
 
@@ -24,4 +26,5 @@ def sentiment():
   return jsonify(data=result)
 
 if __name__ == '__main__':
-  app.run('localhost', port=5000, debug=True)
+  # 배포 시 debug=False로 설정해야 함
+  app.run('localhost', port=5000, debug=False)
