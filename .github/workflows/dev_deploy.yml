@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CI/CD Pipeline
 
 on:
   pull_request: # pull request -> merge 가 되었을 때 Github Action 실행!
@@ -10,7 +10,7 @@ jobs:
     # pull 요청이 develop에 merge 되었을 때 아래 steps를 실행
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
-    runs-on: ubuntu_latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - run: docker compose up -d
