@@ -20,19 +20,19 @@ services:
     networks:
       - docker-dou-test-net
 
-  # dou-mysql:
-  #   # mysql
-  #   container_name: dou-mysql
-  #   image: mysql:latest
-  #   # platform: linux/amd64
-  #   environment:
-  #     MYSQL_DATABASE: "docker_dou_test"
-  #     MYSQL_ROOT_PASSWORD: "root"
-  #     MYSQL_ROOT_HOST: "%"
-  #   ports:
-  #     - 3307:3306
-  #   networks:
-  #     - docker-dou-test-net
+  dou-mysql:
+    # mysql
+    container_name: dou-mysql
+    image: mysql:latest
+    # platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: "docker_dou_test"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - 3307:3306
+    networks:
+      - docker-dou-test-net
 
   dou-flask:
     # Flask
