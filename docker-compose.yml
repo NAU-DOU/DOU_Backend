@@ -16,7 +16,7 @@ services:
     volumes:
       - ./DOU_Nest/src:/nestfolder/src
     env_file:
-      - ./.env.docker
+      - .env.docker
     networks:
       - docker-dou-test-net
 
