@@ -13,17 +13,4 @@ jobs:
     runs-on: ubuntu_latest
     steps:
       - uses: actions/checkout@v3
-      - name: Login DockerHub
-        env:
-          DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-
-      - name: Build the Docker Image
-        run: docker build -t dou_repo .
-
-      - name: taging
-        run: docker tag dou_repo:latest silverage22/dou_repo:latest
-
-      - name: Push to Dockerhub
-        run: docker push silverage22/dou_repo:latest
+      - run: docker compose up -d
