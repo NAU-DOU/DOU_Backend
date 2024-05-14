@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+    # pull 요청이 develop에 merge 되었을 때 아래 steps를 실행
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+
     runs-on: ubuntu_latest
     steps:
       - uses: actions/checkout@v3
