@@ -10,7 +10,7 @@ import { CustomException } from 'src/commons/exception/custom.exception';
 /*
 // CHECKLIST
 // [ ] sentenceList -> \n을 기준으로 해 놨는데, 해당 부분이 어떻게 프론트에서 전달되는지 확인해야 함.
-// [ ] 지정값이 any인지 확인, 만약 any라면 적절한 형태 지정 필요
+// [x] 지정값이 any인지 확인, 만약 any라면 적절한 형태 지정 필요
 // [x] 에러 핸들링 설정
 */
 
