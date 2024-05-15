@@ -12,5 +12,11 @@ jobs:
 
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - run: docker compose --env-file .env.docker up -d
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Transfer .env.docker file to EC2 instance
+        run: scp .env.docker ubuntu@ec2-instance-ip:/home/ubuntu/actions-runner/_work/DOU_Backend/DOU_Backend/.env.docker
+
+      - name: Docker Compose up
+        run: docker compose --env-file .env.docker up -d
