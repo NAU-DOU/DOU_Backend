@@ -15,8 +15,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Transfer .env.docker file to EC2 instance
-        run: scp .env.docker ${{secrets.EC2_HOST}}:/home/ubuntu/actions-runner/_work/DOU_Backend/DOU_Backend/.env.docker
+      - name: Copy File Via ssh key
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_KEY}}
+          port: ${{secrets.EC2_SSH_PORT}}
+          source: ".env.docker"
+          target: "/home/ubuntu/actions-runner/_work/DOU_Backend/DOU_Backend/"
 
       - name: Docker Compose up
         run: docker compose --env-file .env.docker up -d
