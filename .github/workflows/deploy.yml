@@ -41,32 +41,6 @@ jobs:
       - name: Run Build
         run: yarn build # 빌드
 
-  deploy:
-    name: CD Pipeline
-    runs-on: ubuntu-latest # 우분투 최신 버전으로 실행
-
-    strategy:
-      matrix:
-        node-version: ['18.x'] # 노드 버전 지정! 여러 개도 가능! ['18.x', '14.x'] 요렇게
-
-    steps:
-      - name: Checkout - Deploy
-        uses: actions/checkout@v3
-
-      # Node.js 세팅
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-
-      # dependencies 설치, test and build
-      - name: Install dependencies
-        run: yarn install # dependencies 설치
-
-      - name: Run Build
-        run: yarn build # 빌드
-
       # 배포 패키지 생성 //
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*' './src/*'
