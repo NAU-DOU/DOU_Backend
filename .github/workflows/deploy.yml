@@ -67,7 +67,7 @@ jobs:
       - name: Run Build
         run: yarn build # 빌드
 
-      # 배포 패키지 생성
+      # 배포 패키지 생성 //
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*' './src/*' './node_modules/*'
 
