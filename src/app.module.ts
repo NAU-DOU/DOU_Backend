@@ -8,28 +8,29 @@ import { HttpExceptionFilter } from './commons/exception/http-exception.filter';
 import { CommonModule } from './commons/common.module';
 import { HealthModule } from './apis/health/health.module';
 
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { UserEntity } from './apis/auths/entities/user.entity';
-// import { RecordEntity } from './apis/records/entities/record.entity';
-// import { ChatEntity } from './apis/records/entities/chat.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './apis/auths/entities/user.entity';
+import { RecordEntity } from './apis/records/entities/record.entity';
+import { ChatEntity } from './apis/records/entities/chat.entity';
+import { CalendarEntity } from './apis/records/entities/calendar.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // .env 사용을 위함
     }),
-    // TypeOrmModule.forRoot({
-    //   retryAttempts: process.env.NODE_ENV === 'production' ? 10 : 1,
-    //   type: process.env.DB_TYPE as 'mysql',
-    //   host: process.env.DB_HOST,
-    //   port: Number(process.env.DB_PORT),
-    //   database: process.env.DB_NAME,
-    //   username: process.env.DB_USER,
-    //   password: process.env.DB_PASSWORD,
-    //   entities: [UserEntity, RecordEntity, ChatEntity],
-    //   synchronize: process.env.NODE_ENV === 'production' ? false : true,
-    //   logging: true,
-    // }),
+    TypeOrmModule.forRoot({
+      retryAttempts: process.env.NODE_ENV === 'production' ? 10 : 1,
+      type: process.env.DB_TYPE as 'mysql',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      database: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      entities: [UserEntity, RecordEntity, ChatEntity, CalendarEntity],
+      synchronize: process.env.NODE_ENV === 'production' ? false : true,
+      logging: true,
+    }),
     CommonModule,
     SentimentsModule, // 감정 분석 모듈
     HealthModule, // Health Check
