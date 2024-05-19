@@ -6,6 +6,8 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './commons/exception/http-exception.filter';
 
 import { CommonModule } from './commons/common.module';
+import { HealthModule } from './apis/health/health.module';
+
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { UserEntity } from './apis/auths/entities/user.entity';
 // import { RecordEntity } from './apis/records/entities/record.entity';
@@ -30,6 +32,7 @@ import { CommonModule } from './commons/common.module';
     // }),
     CommonModule,
     SentimentsModule, // 감정 분석 모듈
+    HealthModule, // Health Check
   ],
   controllers: [],
   providers: [
