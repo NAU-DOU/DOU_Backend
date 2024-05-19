@@ -69,7 +69,7 @@ jobs:
 
       # 배포 패키지 생성
       - name: Generate deployment package
-        run: zip -r deploy.zip . -x *.git* ./src/* ./node_modules/
+        run: zip -r deploy.zip . -x '*.git*' './src/*' './node_modules/'
 
       # 생성한 deploy.zip 파일 내부 확인용!
       - name: Get Zip Inside
