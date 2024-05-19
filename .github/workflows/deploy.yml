@@ -42,7 +42,7 @@ jobs:
         run: yarn build # 빌드
 
   deploy:
-    name: CI Pipeline
+    name: CD Pipeline
     runs-on: ubuntu-latest # 우분투 최신 버전으로 실행
 
     strategy:
@@ -94,8 +94,8 @@ jobs:
         with:
           aws_access_key: ${{secrets.AWS_ACTION_ACCESS_KEY_ID}}
           aws_secret_key: ${{secrets.AWS_ACTION_SECRET_ACCESS_KEY}}
-          application_name: ${{secrets.APPLICATION_NAME}}
-          environment_name: ${{secrets.ENVIRONMENT_NAME}}
+          application_name: dou-dev
+          environment_name: Dou-dev-env
           version_label: github-action-${{ steps.current-time.outputs.formattedTime }} # version_label은 이전에 배포한 label과 중복되면 안됨!
           use_existing_version_if_available: true
           region: ap-northeast-2
