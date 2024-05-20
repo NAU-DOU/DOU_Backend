@@ -13,6 +13,7 @@ import { UserEntity } from './apis/auths/entities/user.entity';
 import { RecordEntity } from './apis/records/entities/record.entity';
 import { ChatEntity } from './apis/records/entities/chat.entity';
 import { CalendarEntity } from './apis/records/entities/calendar.entity';
+import { GptModule } from './apis/gpt/gpt.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CalendarEntity } from './apis/records/entities/calendar.entity';
     CommonModule,
     SentimentsModule, // 감정 분석 모듈
     HealthModule, // Health Check
+    GptModule, // GPT 응답 요청 모듈
   ],
   controllers: [],
   providers: [

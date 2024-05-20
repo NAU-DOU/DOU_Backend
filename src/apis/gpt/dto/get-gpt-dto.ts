@@ -1,6 +1,6 @@
-export class GetSentimentInputDto {
+export class GetGptInputDto {
   userId: number;
-  sentense: string;
+  context: string;
   reqType: number;
   reqSent: number;
 }
