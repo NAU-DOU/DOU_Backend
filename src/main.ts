@@ -10,6 +10,7 @@ async function bootstrap(): Promise<string> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
     logger: winstonLogger,
+    cors: true,
   });
 
   // Swagger

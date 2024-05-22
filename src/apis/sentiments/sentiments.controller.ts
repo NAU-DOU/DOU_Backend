@@ -23,7 +23,6 @@ export class SentimentsController {
   }
 
   // FIXME: any말고 객체에 적절한 응답 값을 리턴할 수 있도록 형태 지정해야 함
-  // NOTE: Swagger API 작성 마저 하기
   @Post()
   async getSentimentResult(@Body() getSentimentInput: GetSentimentInputDto, @Res() response: Response) {
     const result: object = await this.sentimentsService.getSentimentResult(getSentimentInput);
