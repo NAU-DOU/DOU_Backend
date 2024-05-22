@@ -2,7 +2,7 @@ import { Catch, HttpException, Inject, Injectable, Logger, UseFilters } from '@n
 
 import { statusCode } from 'src/commons/exception/status.code';
 import { CustomException } from 'src/commons/exception/custom.exception';
-import { GetGptInputDto } from './dto/get-gpt-dto';
+import { GetGptInputDto } from './dto/get-gpt.dto';
 
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
