@@ -35,6 +35,8 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "axios": "^1.6.8",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "graphql": "^16.8.1",
     "mysql2": "^3.9.7",
     "nest-winston": "^1.9.4",

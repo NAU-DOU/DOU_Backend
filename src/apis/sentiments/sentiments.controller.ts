@@ -6,14 +6,14 @@ import { SentimentsService } from './sentiments.service';
 import { statusCode } from 'src/commons/exception/status.code';
 import { Response } from 'express';
 
-/**
- * A list about sentiment
- * @example ['sentiment']
- */
 @Controller('sentiment')
 export class SentimentsController {
   constructor(private readonly sentimentsService: SentimentsService) {}
 
+  /**
+   * Sentiment 테스트
+   * @example ['sentiment']
+   */
   @Get()
   getAll(@Res() response: Response) {
     response.status(200).json({
@@ -22,7 +22,14 @@ export class SentimentsController {
     });
   }
 
-  // FIXME: any말고 객체에 적절한 응답 값을 리턴할 수 있도록 형태 지정해야 함
+  /**
+   * 감정 분석 요청
+   * - userId
+   * * 사용자 아이디 (인덱스 아이디)
+   * - sentence
+   * * 통 문장 넘겨주되 줄바꿈의 경우 \n으로 변환 혹은 표기하여 넣어주기
+   * @example ['sentiment']
+   */
   @Post()
   async getSentimentResult(@Body() getSentimentInput: GetSentimentInputDto, @Res() response: Response) {
     const result: object = await this.sentimentsService.getSentimentResult(getSentimentInput);
