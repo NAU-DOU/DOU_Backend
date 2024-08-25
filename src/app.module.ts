@@ -11,9 +11,13 @@ import { HealthModule } from './apis/health/health.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './apis/auths/entities/user.entity';
 import { RecordEntity } from './apis/records/entities/record.entity';
-import { ChatEntity } from './apis/records/entities/chat.entity';
-import { CalendarEntity } from './apis/records/entities/calendar.entity';
+import { ChatEntity } from './apis/chats/entities/chat.entity';
+import { RoomEntity } from './apis/rooms/entities/room.entity';
+
 import { GptModule } from './apis/gpt/gpt.module';
+import { RecordsModule } from './apis/records/records.module';
+import { RoomsModule } from './apis/rooms/rooms.module';
+import { ChatsModule } from './apis/chats/chats.module';
 
 @Module({
   imports: [
@@ -28,8 +32,9 @@ import { GptModule } from './apis/gpt/gpt.module';
       database: process.env.DB_NAME,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      entities: [UserEntity, RecordEntity, ChatEntity, CalendarEntity],
-      synchronize: false,
+      entities: [UserEntity, RecordEntity, ChatEntity, RoomEntity],
+      synchronize: true,
+      timezone: 'Asia/Seoul',
       // synchronize: process.env.NODE_ENV === 'production' ? false : true,
       logging: true,
     }),
@@ -37,6 +42,9 @@ import { GptModule } from './apis/gpt/gpt.module';
     SentimentsModule, // 감정 분석 모듈
     HealthModule, // Health Check
     GptModule, // GPT 응답 요청 모듈
+    RecordsModule, // Record 관련 모듈 - 세부 분류
+    RoomsModule, // 방 관련 모듈 - 대화
+    ChatsModule, // Chat 관련 모듈 - log
   ],
   controllers: [],
   providers: [

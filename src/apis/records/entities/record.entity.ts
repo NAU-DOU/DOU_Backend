@@ -1,6 +1,17 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ChatEntity } from './chat.entity';
-import { CalendarEntity } from './calendar.entity';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ChatEntity } from '../../chats/entities/chat.entity';
+import { toZonedTime } from 'date-fns-tz';
+import { add } from 'date-fns';
+import { RoomEntity } from 'src/apis/rooms/entities/room.entity';
 
 @Entity()
 export class RecordEntity {
@@ -16,10 +27,20 @@ export class RecordEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  @OneToMany(() => ChatEntity, (chat) => chat.chat_id)
+  @OneToMany(() => ChatEntity, (chat) => chat.record)
   chats: ChatEntity[];
 
-  @JoinColumn() // 달력 아이디
-  @ManyToOne(() => CalendarEntity, (calendar) => calendar.cal_id)
-  cal_id: number;
+  @JoinColumn({ name: 'rec_room_id' }) // 달력 아이디
+  @ManyToOne(() => RoomEntity, (room) => room.records)
+  room: RoomEntity;
+
+  @BeforeInsert()
+  setTimeStamps() {
+    const timeZone = 'Asia/Seoul';
+    const now = new Date(); // 현재 UTC 날짜
+    const zonedDate = toZonedTime(now, timeZone); // 타임존으로 변환
+    const date = add(zonedDate, { hours: 9 }); // +9
+
+    this.created_at = date;
+  }
 }
