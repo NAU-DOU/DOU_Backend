@@ -71,3 +71,76 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+```
+DOU_Backend
+├─ .eslintrc.js
+├─ .github
+│  └─ workflows
+│     └─ deploy.yml
+├─ .gitignore
+├─ .platform
+│  └─ nginx
+│     └─ nginx.conf
+├─ .prettierrc
+├─ nest-cli.json
+├─ package.json
+├─ Procfile
+├─ README.md
+├─ src
+│  ├─ apis
+│  │  ├─ auths
+│  │  │  ├─ dto
+│  │  │  ├─ entities
+│  │  │  │  └─ user.entity.ts
+│  │  │  └─ interfaces
+│  │  ├─ gpt
+│  │  │  ├─ dto
+│  │  │  │  └─ get-gpt.dto.ts
+│  │  │  ├─ gpt-status.enum.ts
+│  │  │  ├─ gpt.controller.ts
+│  │  │  ├─ gpt.module.ts
+│  │  │  └─ gpt.service.ts
+│  │  ├─ health
+│  │  │  ├─ health.controller.ts
+│  │  │  └─ health.module.ts
+│  │  ├─ records
+│  │  │  ├─ dto
+│  │  │  ├─ entities
+│  │  │  │  ├─ calendar.entity.ts
+│  │  │  │  ├─ chat.entity.ts
+│  │  │  │  └─ record.entity.ts
+│  │  │  └─ interfaces
+│  │  ├─ sentiments
+│  │  │  ├─ dto
+│  │  │  │  └─ get-sentiment.dto.ts
+│  │  │  ├─ entities
+│  │  │  ├─ interfaces
+│  │  │  │  └─ sentiments-service.interface.ts
+│  │  │  ├─ sentiments.controller.ts
+│  │  │  ├─ sentiments.module.ts
+│  │  │  └─ sentiments.service.ts
+│  │  └─ users
+│  │     ├─ dto
+│  │     ├─ entities
+│  │     └─ interfaces
+│  ├─ app.module.ts
+│  ├─ commons
+│  │  ├─ common.module.ts
+│  │  ├─ exception
+│  │  │  ├─ custom.exception.ts
+│  │  │  ├─ http-exception.filter.ts
+│  │  │  └─ status.code.ts
+│  │  ├─ logger
+│  │  │  ├─ logger-context.middleware.ts
+│  │  │  └─ logger.config.ts
+│  │  └─ swagger
+│  └─ main.ts
+├─ test
+│  ├─ app.e2e-spec.ts
+│  └─ jest-e2e.json
+├─ tsconfig.build.json
+├─ tsconfig.json
+└─ yarn.lock
+
+```
