@@ -31,6 +31,7 @@ export class RecordsService {
   // roomID
   async getRecordsToRoomId(inputRecordDto: SetRecordInputDto): Promise<GetRecordDto[]> {
     const { roomId } = inputRecordDto;
+    console.log(roomId);
     const records = await this.recordRepository.find({
       where: { room: { room_id: roomId } },
     });

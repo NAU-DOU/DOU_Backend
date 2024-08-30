@@ -1,7 +1,9 @@
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class SetRecordInputDto {
   @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value, 10)) // 문자열을 숫자로 변환
   @IsNumber()
   roomId: number;
 }
