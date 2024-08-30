@@ -4,6 +4,8 @@ import { Response, response } from 'express';
 import { statusCode } from 'src/commons/exception/status.code';
 import { GetRecordDto, GetRecordInputDto, GetRecordUpdateDto } from './dto/get-record.dto';
 import { SetRecordInputDto, SetRecordInputRecordIdDto, UpdateRecordDto } from './dto/set-record.dto';
+import { ApiParam } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('record')
 export class RecordsController {
@@ -27,8 +29,10 @@ export class RecordsController {
    * RoomId에 따른 Record들 불러오기
    */
   @Get('room')
-  async getRecordToRoomId(@Query('roomId') inputRecordDto: SetRecordInputDto, @Res() response: Response) {
-    const result: GetRecordDto[] = await this.recordsService.getRecordsToRoomId(inputRecordDto);
+  async getRecordToRoomId(@Query('roomId') roomId: number, @Res() response: Response) {
+    const result: GetRecordDto[] = await this.recordsService.getRecordsToRoomId(
+      plainToInstance(SetRecordInputDto, { roomId }),
+    );
 
     response.status(200).json({
       ...statusCode.SUCCESS,
@@ -41,10 +45,10 @@ export class RecordsController {
    * Record Id에 따른 Record 불러오기
    */
   @Get(':recordId')
-  async getRecordToRecordId(
-    @Param('recordId') setRecordInputRecordIdDto: SetRecordInputRecordIdDto,
-    @Res() response: Response,
-  ) {
+  @ApiParam({ name: 'recordId', type: String })
+  async getRecordToRecordId(@Param('recordId') recId: number, @Res() response: Response) {
+    const setRecordInputRecordIdDto = new SetRecordInputRecordIdDto();
+    setRecordInputRecordIdDto.recordId = recId;
     const result: GetRecordDto = await this.recordsService.getRecordToRecordId(setRecordInputRecordIdDto);
 
     response.status(200).json({
