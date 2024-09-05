@@ -1,4 +1,5 @@
 import { RecordEntity } from 'src/apis/records/entities/record.entity';
+import { RoomEntity } from 'src/apis/rooms/entities/room.entity';
 import {
   Column,
   CreateDateColumn,
@@ -39,6 +40,6 @@ export class UserEntity {
   @DeleteDateColumn()
   resign_at: Date;
 
-  @OneToMany(() => RecordEntity, (record) => record.rec_id)
-  chats: RecordEntity[];
+  @OneToMany(() => RoomEntity, (room) => room.room_id)
+  rooms: RoomEntity[];
 }

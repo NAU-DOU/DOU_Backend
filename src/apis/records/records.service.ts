@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RecordEntity } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetRecordDto, GetRecordInputDto, GetRecordUpdateDto } from './dto/get-record.dto';
+import { GetRecordDto, GetRecordInputDto, GetRecordSelectDto, GetRecordUpdateDto } from './dto/get-record.dto';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { SetRecordInputDto, SetRecordInputRecordIdDto, UpdateRecordDto } from './dto/set-record.dto';
 import { RoomEntity } from '../rooms/entities/room.entity';
@@ -29,15 +29,37 @@ export class RecordsService {
   }
 
   // roomID
-  async getRecordsToRoomId(inputRecordDto: SetRecordInputDto): Promise<GetRecordDto[]> {
-    const { roomId } = inputRecordDto;
-    console.log(roomId);
-    const records = await this.recordRepository.find({
-      where: { room: { room_id: roomId } },
-    });
-    return records.map((record) => {
-      return plainToClass(GetRecordDto, record);
-    });
+  async getRecordsToRoomId(
+    cursorId: number,
+    limit: number,
+    roomId: number,
+  ): Promise<{ data: GetRecordSelectDto[]; cursor: number }> {
+    const queryBuilderFactory = this.recordRepository
+      .createQueryBuilder('record')
+      .leftJoinAndSelect('record.room', 'room')
+      .where('record.rec_room_id = :roomId', { roomId });
+
+    if (cursorId > 0) {
+      queryBuilderFactory.andWhere('record.rec_id < :cursorId', { cursorId });
+    }
+
+    queryBuilderFactory.orderBy('record.rec_id', 'DESC').take(limit);
+
+    const [records, totalCount] = await queryBuilderFactory.getManyAndCount();
+
+    const data = records.map((record) =>
+      plainToClass(GetRecordSelectDto, {
+        recordId: record.rec_id,
+        roomId: record.room.room_id,
+        createdAt: record.created_at,
+        recordSummary: record.rec_summary,
+        recordSent: record.rec_sent,
+      }),
+    );
+
+    const cursor = data.length > 0 ? data[data.length - 1].recordId : 0;
+
+    return { data, cursor };
   }
 
   // recordId

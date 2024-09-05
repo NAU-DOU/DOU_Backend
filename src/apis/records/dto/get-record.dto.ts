@@ -9,7 +9,7 @@ export class GetRecordDto {
 
   @IsNotEmpty()
   @Transform(({ value }) => {
-    return moment.tz(value, 'YYYY.MM.DD', 'Asia/Seoul').toDate();
+    return moment(value).format('YYYY.MM.DD');
   })
   @IsDate()
   createdAt: string;
@@ -31,6 +31,31 @@ export class GetRecordDto {
   chatId: number;
 }
 
+export class GetRecordSelectDto {
+  @IsNotEmpty()
+  @IsNumber()
+  recordId: number;
+
+  @IsNotEmpty()
+  @Transform(({ value }) => {
+    return moment(value).format('YYYY.MM.DD');
+  })
+  @IsDate()
+  createdAt: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  roomId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  recordSent: number;
+
+  @IsNotEmpty()
+  @IsString()
+  recordSummary: string;
+}
+
 export class GetRecordInputDto {
   @IsNotEmpty()
   @IsNumber()
@@ -38,7 +63,7 @@ export class GetRecordInputDto {
 
   @IsNotEmpty()
   @Transform(({ value }) => {
-    return moment(value).tz('Asia/Seoul').format('YYYY.MM.DD');
+    return moment(value).format('YYYY.MM.DD');
   })
   @IsDate()
   createdAt: string;
@@ -64,7 +89,7 @@ export class GetRecordUpdateDto {
 
   @IsNotEmpty()
   @Transform(({ value }) => {
-    return moment.tz(value, 'YYYY.MM.DD', 'Asia/Seoul').toDate();
+    return moment(value).format('YYYY.MM.DD');
   })
   @IsDate()
   createdAt: string;

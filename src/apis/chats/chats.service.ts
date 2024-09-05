@@ -27,18 +27,22 @@ export class ChatsService {
   }
 
   async getChatsToRecordId(
-    paging: number,
+    cursorId: number,
     limit: number,
     recordId: number,
-  ): Promise<{ data: GetChatDto[]; count: number }> {
-    const skip = (paging - 1) * limit;
-    const [chats, totalCount] = await this.chatRepository
+  ): Promise<{ data: GetChatDto[]; cursor: number }> {
+    const queryBuilderFactory = this.chatRepository
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.record', 'record')
-      .where('record.rec_id = :recordId', { recordId })
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+      .where('record.rec_id = :recordId', { recordId });
+
+    if (cursorId > 0) {
+      queryBuilderFactory.andWhere('chat.chat_id < :cursorId', { cursorId });
+    }
+
+    queryBuilderFactory.orderBy('chat.chat_id', 'DESC').take(limit);
+
+    const [chats, totalCount] = await queryBuilderFactory.getManyAndCount();
 
     const data = chats.map((chat) =>
       plainToClass(GetChatDto, {
@@ -51,9 +55,9 @@ export class ChatsService {
       }),
     );
 
-    const count = data.length > 0 ? data[data.length - 1].chatId : 0;
+    const cursor = data.length > 0 ? data[data.length - 1].chatId : 0;
 
-    return { data, count };
+    return { data, cursor };
   }
 
   async setChat(items: SetChatInputDto[]): Promise<GetChatInputDto[]> {
