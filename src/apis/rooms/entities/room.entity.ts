@@ -34,9 +34,9 @@ export class RoomEntity {
   })
   room_sent: number;
 
-  @JoinColumn()
-  @ManyToOne(() => UserEntity, (user) => user.user_id)
-  user_id: number;
+  @JoinColumn({ name: 'room_user_id' })
+  @ManyToOne(() => UserEntity, (user) => user.rooms)
+  user: UserEntity;
 
   @OneToMany(() => RecordEntity, (rec) => rec.rec_id)
   records: RecordEntity[];

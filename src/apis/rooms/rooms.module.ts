@@ -4,6 +4,7 @@ import { RoomsController } from './rooms.controller';
 import { RoomsService } from './rooms.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomEntity } from './entities/room.entity';
+import { UserEntity } from '../auths/entities/user.entity';
 
 /**
  * 녹음 관련 내용
@@ -13,7 +14,7 @@ import { RoomEntity } from './entities/room.entity';
  * */
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RoomEntity])],
+  imports: [TypeOrmModule.forFeature([RoomEntity, UserEntity])],
   controllers: [RoomsController],
   providers: [RoomsService],
 })

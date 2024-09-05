@@ -2,9 +2,9 @@ import { Body, Controller, Get, Param, Patch, Post, Put, Query, Res } from '@nes
 import { RecordsService } from './records.service';
 import { Response, response } from 'express';
 import { statusCode } from 'src/commons/exception/status.code';
-import { GetRecordDto, GetRecordInputDto, GetRecordUpdateDto } from './dto/get-record.dto';
+import { GetRecordDto, GetRecordInputDto, GetRecordSelectDto, GetRecordUpdateDto } from './dto/get-record.dto';
 import { SetRecordInputDto, SetRecordInputRecordIdDto, UpdateRecordDto } from './dto/set-record.dto';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiParam, ApiQuery } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 @Controller('record')
@@ -26,17 +26,28 @@ export class RecordsController {
 
   /**
    * Record Get Room Id
-   * RoomId에 따른 Record들 불러오기
-   */
+   * - cursorId: 없이 보내도 됨 (맨 처음 조회 시), 이후 데이터에 전달되는 cursorId 그대로 쿼리에 추가하면 됨
+   * - limit: 몇 개씩 가져올 지 (default: 10개)
+   *    */
   @Get('room')
-  async getRecordToRoomId(@Query('roomId') roomId: number, @Res() response: Response) {
-    const result: GetRecordDto[] = await this.recordsService.getRecordsToRoomId(
-      plainToInstance(SetRecordInputDto, { roomId }),
+  @ApiQuery({ name: 'cursorId', required: false })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  async getRecordToRoomId(
+    @Query('roomId') roomId: number,
+    @Query('cursorId') cursorId: number = 1,
+    @Query('limit') limit: number = 10,
+    @Res() response: Response,
+  ) {
+    const result: { data: GetRecordSelectDto[]; cursor: number } = await this.recordsService.getRecordsToRoomId(
+      cursorId,
+      limit,
+      roomId,
     );
 
     response.status(200).json({
       ...statusCode.SUCCESS,
-      data: result,
+      data: result.data,
+      cursorId: result.cursor,
     });
   }
 

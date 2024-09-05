@@ -4,6 +4,7 @@ import { PaginationDto, SetChatInputDto } from './dto/set-chat.dto';
 import { statusCode } from 'src/commons/exception/status.code';
 import { ChatsService } from './chats.service';
 import { GetChatDto, GetChatInputDto } from './dto/get-chat.dto';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('chat')
 export class ChatsController {
@@ -39,15 +40,16 @@ export class ChatsController {
   }
 
   @Get('')
+  @ApiQuery({ name: 'cursorId', required: false })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
   async getChatToRecordId(
     @Query('recordId') recordId: number,
-    @Query('paging') paging: number,
-    @Query('limit') limit: number,
+    @Query('cursorId') cursorId: number = -1,
+    @Query('limit') limit: number = 10,
     @Res() response: Response,
   ) {
-    console.log(recordId);
-    const result: { data: GetChatDto[]; count: number } = await this.chatsService.getChatsToRecordId(
-      paging,
+    const result: { data: GetChatDto[]; cursor: number } = await this.chatsService.getChatsToRecordId(
+      cursorId,
       limit,
       recordId,
     );
@@ -55,7 +57,7 @@ export class ChatsController {
     response.status(200).json({
       ...statusCode.SUCCESS,
       data: result.data,
-      paging: result.count,
+      cursorId: result.cursor,
     });
   }
 }

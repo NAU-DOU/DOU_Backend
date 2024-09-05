@@ -4,42 +4,119 @@ import { Between, Repository } from 'typeorm';
 import { RoomEntity } from './entities/room.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { GetRoomDto } from './dto/get-room.dto';
+import { GetRoomDto, GetRoomSelectDto } from './dto/get-room.dto';
 import { start } from 'repl';
 import { SetRoomInputDto, UpdateRoomInputDto } from './dto/set-room.dto';
 import { CustomException } from 'src/commons/exception/custom.exception';
 import { statusCode } from 'src/commons/exception/status.code';
+import { UserEntity } from '../auths/entities/user.entity';
+import { privateDecrypt } from 'crypto';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(RoomEntity)
     private roomRepository: Repository<RoomEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   /**
-   * Calendar Data Entity
-   * @example ['calendar']
    */
-  async findAll(): Promise<GetRoomDto[]> {
-    const rooms = await this.roomRepository.find();
-    return rooms.map((room) => {
-      return plainToClass(GetRoomDto, room);
-    });
+  async getAllRoom(cursorId: number, limit: number): Promise<{ data: GetRoomSelectDto[]; cursor: number }> {
+    const queryBuilderFactory = this.roomRepository.createQueryBuilder('room').leftJoinAndSelect('room.user', 'user');
+
+    if (cursorId > 0) {
+      queryBuilderFactory.andWhere('room.room_id < :cursorId', { cursorId });
+    }
+
+    queryBuilderFactory.orderBy('room.room_id', 'DESC').take(limit);
+
+    const [rooms, totalCount] = await queryBuilderFactory.getManyAndCount();
+
+    const data = rooms.map((room) =>
+      plainToClass(GetRoomSelectDto, {
+        roomId: room.room_id,
+        roomDate: room.room_date,
+        roomUserId: room.user.user_id,
+        roomSent: room.room_sent,
+      }),
+    );
+
+    const cursor = data.length > 0 ? data[data.length - 1].roomId : 0;
+
+    return { data, cursor };
   }
 
   // Date에 따라 Room 불러오기
-  async findRoomsToDate(date: string): Promise<RoomEntity[]> {
+  async findRoomsToDate(
+    cursorId: number,
+    limit: number,
+    date: string,
+  ): Promise<{ data: GetRoomSelectDto[]; cursor: number }> {
     const startDate = new Date(date + 'T00:00:00.000Z');
     const endDate = new Date(startDate);
 
     endDate.setDate(startDate.getDate() + 1);
 
-    return await this.roomRepository.find({
-      where: {
-        room_date: Between(startDate, endDate),
-      },
-    });
+    const queryBuilderFactory = this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.user', 'user')
+      .where('room.room_date BETWEEN :startDate AND :endDate', { startDate, endDate });
+
+    if (cursorId > 0) {
+      queryBuilderFactory.andWhere('room.room_id < :cursorId', { cursorId });
+    }
+
+    queryBuilderFactory.orderBy('room.room_id', 'DESC').take(limit);
+
+    const [rooms, totalCount] = await queryBuilderFactory.getManyAndCount();
+
+    const data = rooms.map((room) =>
+      plainToClass(GetRoomSelectDto, {
+        roomId: room.room_id,
+        roomDate: room.room_date,
+        roomUserId: room.user.user_id,
+        roomSent: room.room_sent,
+      }),
+    );
+
+    const cursor = data.length > 0 ? data[data.length - 1].roomId : 0;
+
+    return { data, cursor };
+  }
+
+  // userId에 따라 Room 불러오기
+  async findRoomsToUser(
+    cursorId: number,
+    limit: number,
+    userId: number,
+  ): Promise<{ data: GetRoomSelectDto[]; cursor: number }> {
+    const queryBuilderFactory = this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.user', 'user')
+      .where('room.room_user_id = :userId', { userId });
+
+    if (cursorId > 0) {
+      queryBuilderFactory.andWhere('room.room_id < :cursorId', { cursorId });
+    }
+
+    queryBuilderFactory.orderBy('room.room_id', 'DESC').take(limit);
+
+    const [rooms, totalCount] = await queryBuilderFactory.getManyAndCount();
+
+    const data = rooms.map((room) =>
+      plainToClass(GetRoomSelectDto, {
+        roomId: room.room_id,
+        roomDate: room.room_date,
+        roomUserId: room.user.user_id,
+        roomSent: room.room_sent,
+      }),
+    );
+
+    const cursor = data.length > 0 ? data[data.length - 1].roomId : 0;
+
+    return { data, cursor };
   }
 
   // RoomId에 따라 Room 불러오기
@@ -55,7 +132,7 @@ export class RoomsService {
     const { roomUserId, roomSent } = setRoomDto;
 
     const room = new RoomEntity();
-    room.user_id = roomUserId;
+    room.user.user_id = roomUserId;
     room.room_sent = roomSent;
 
     return await this.roomRepository.save(room);

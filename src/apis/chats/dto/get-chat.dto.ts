@@ -9,7 +9,7 @@ export class GetChatDto {
 
   @IsNotEmpty()
   @Transform(({ value }) => {
-    return moment(value).tz('Asia/Seoul').format('YYYY.MM.DD');
+    return moment(value).format('YYYY.MM.DD');
   })
   @IsDate()
   createdAt: string;
@@ -38,7 +38,7 @@ export class GetChatInputDto {
 
   @IsNotEmpty()
   @Transform(({ value }) => {
-    return moment(value).tz('Asia/Seoul').format('YYYY.MM.DD');
+    return moment(value).format('YYYY.MM.DD');
   })
   @IsDate()
   createdAt: string;
