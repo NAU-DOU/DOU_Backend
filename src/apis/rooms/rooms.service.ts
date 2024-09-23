@@ -11,6 +11,7 @@ import { CustomException } from 'src/commons/exception/custom.exception';
 import { statusCode } from 'src/commons/exception/status.code';
 import { UserEntity } from '../auths/entities/user.entity';
 import { privateDecrypt } from 'crypto';
+import { RoomResponseDto } from './dto/room-response.dto';
 
 @Injectable()
 export class RoomsService {
@@ -128,14 +129,26 @@ export class RoomsService {
     });
   }
 
-  async setRoomToId(setRoomDto: SetRoomInputDto): Promise<RoomEntity> {
+  async setRoomToId(setRoomDto: SetRoomInputDto): Promise<RoomResponseDto> {
     const { roomUserId, roomSent } = setRoomDto;
 
+    // UserEntity를 roomUserId로 찾음
+    const user = await this.userRepository.findOne({ where: { user_id: roomUserId } });
+
     const room = new RoomEntity();
-    room.user.user_id = roomUserId;
+    room.user = user;
     room.room_sent = roomSent;
 
-    return await this.roomRepository.save(room);
+    const result = await this.roomRepository.save(room);
+
+    return new RoomResponseDto({
+      userId: result.user.user_id,
+      userNickname: result.user.user_nickname,
+      roomSent: result.room_sent,
+      roomId: result.room_id,
+      roomDate: result.room_date,
+      createdAt: result.created_at,
+    });
   }
 
   async updateRoomToId(updateRoomInputDto: UpdateRoomInputDto): Promise<RoomEntity> {

@@ -112,6 +112,7 @@ export class RoomsController {
    */
   @Post('')
   async setRoomToId(@Body() setRoomInputDto: SetRoomInputDto, @Res() response: Response) {
+    console.log(setRoomInputDto);
     const result: RoomEntity = await this.roomsService.setRoomToId(setRoomInputDto);
 
     response.status(200).json({
