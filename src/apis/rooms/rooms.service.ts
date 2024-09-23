@@ -135,6 +135,8 @@ export class RoomsService {
     // UserEntity를 roomUserId로 찾음
     const user = await this.userRepository.findOne({ where: { user_id: roomUserId } });
 
+    if (!user) throw new CustomException(statusCode.NOT_FOUND, statusCode.NOT_FOUND['status']);
+
     const room = new RoomEntity();
     room.user = user;
     room.room_sent = roomSent;
