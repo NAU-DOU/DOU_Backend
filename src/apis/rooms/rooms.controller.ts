@@ -7,7 +7,7 @@ import { SetRoomInputDto, UpdateRoomInputDto } from './dto/set-room.dto';
 import { RoomsService } from './rooms.service';
 import { ApiQuery } from '@nestjs/swagger';
 import { resolveObjectURL } from 'buffer';
-import { RoomResponseDto } from './dto/room-response.dto';
+import { RoomPatchResponseDto, RoomResponseDto } from './dto/room-response.dto';
 
 @Controller('room')
 export class RoomsController {
@@ -127,7 +127,7 @@ export class RoomsController {
    */
   @Patch('')
   async updateRoomSent(@Body() updateRoomInputDto: UpdateRoomInputDto, @Res() response: Response) {
-    const result: RoomEntity = await this.roomsService.updateRoomToId(updateRoomInputDto);
+    const result: RoomPatchResponseDto = await this.roomsService.updateRoomToId(updateRoomInputDto);
 
     response.status(200).json({
       ...statusCode.SUCCESS,

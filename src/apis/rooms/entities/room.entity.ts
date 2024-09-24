@@ -8,6 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import moment from 'moment-timezone';
 import { format, toZonedTime } from 'date-fns-tz';
@@ -26,6 +27,9 @@ export class RoomEntity {
   // @CreateDateColumn()
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
 
   @Column({
     type: 'tinyint',
@@ -50,5 +54,6 @@ export class RoomEntity {
 
     this.room_date = date;
     this.created_at = date;
+    this.updated_at = date;
   }
 }

@@ -1,17 +1,16 @@
-import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { RoomEntity } from './entities/room.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { GetRoomDto, GetRoomSelectDto } from './dto/get-room.dto';
-import { start } from 'repl';
+import { GetRoomSelectDto } from './dto/get-room.dto';
 import { SetRoomInputDto, UpdateRoomInputDto } from './dto/set-room.dto';
 import { CustomException } from 'src/commons/exception/custom.exception';
 import { statusCode } from 'src/commons/exception/status.code';
 import { UserEntity } from '../auths/entities/user.entity';
-import { privateDecrypt } from 'crypto';
-import { RoomResponseDto } from './dto/room-response.dto';
+import { RoomPatchResponseDto, RoomResponseDto } from './dto/room-response.dto';
+import { toZonedTime } from 'date-fns-tz';
+import { add } from 'date-fns';
 
 @Injectable()
 export class RoomsService {
@@ -153,14 +152,25 @@ export class RoomsService {
     });
   }
 
-  async updateRoomToId(updateRoomInputDto: UpdateRoomInputDto): Promise<RoomEntity> {
+  async updateRoomToId(updateRoomInputDto: UpdateRoomInputDto): Promise<RoomPatchResponseDto> {
     const { roomId, roomSent } = updateRoomInputDto;
     const room = await this.roomRepository.findOne({
       where: { room_id: roomId },
+      relations: ['user'],
     });
 
     if (!room) throw new CustomException(statusCode.NOT_FOUND, statusCode.NOT_FOUND['status']);
     room.room_sent = roomSent;
-    return this.roomRepository.save(room);
+    room.updated_at = add(toZonedTime(new Date(), 'Asia/Seoul'), { hours: 9 });
+
+    const result = await this.roomRepository.save(room);
+
+    return new RoomPatchResponseDto({
+      roomSent: result.room_sent,
+      roomId: result.room_id,
+      roomDate: result.room_date,
+      updatedAt: result.updated_at,
+      userId: result.user.user_id,
+    });
   }
 }
