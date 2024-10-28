@@ -18,6 +18,7 @@ import { GptModule } from './apis/gpt/gpt.module';
 import { RecordsModule } from './apis/records/records.module';
 import { RoomsModule } from './apis/rooms/rooms.module';
 import { ChatsModule } from './apis/chats/chats.module';
+import { AuthModule } from './apis/auths/auth.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ChatsModule } from './apis/chats/chats.module';
     RecordsModule, // Record 관련 모듈 - 세부 분류
     RoomsModule, // 방 관련 모듈 - 대화
     ChatsModule, // Chat 관련 모듈 - log
+    AuthModule, // 소셜로그인 관련 모듈
   ],
   controllers: [],
   providers: [
