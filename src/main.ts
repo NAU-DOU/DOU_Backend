@@ -7,6 +7,8 @@ import { winstonLogger } from './commons/logger/logger.config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
+import * as cookieParser from 'cookie-parser';
+
 async function bootstrap(): Promise<string> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
@@ -31,6 +33,8 @@ async function bootstrap(): Promise<string> {
       transform: true, // 요청 데이터를 DTO 타입으로 자동 변환
     }),
   );
+
+  app.use(cookieParser());
 
   SwaggerModule.setup('api-docs', app, document);
   await app.listen(process.env.NEST_PORT || 3000, '0.0.0.0');

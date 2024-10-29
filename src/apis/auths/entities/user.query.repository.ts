@@ -23,4 +23,9 @@ export class UserQueryRepository extends Repository<UserEntity> {
   async saveUser(user: UserEntity): Promise<UserEntity> {
     return await this.save(user);
   }
+
+  // 특정 사용자 ID로 사용자 조회
+  async findId(userId: number): Promise<UserEntity | null> {
+    return await this.findOne({ where: { user_id: userId } });
+  }
 }
