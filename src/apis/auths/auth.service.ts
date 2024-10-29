@@ -7,7 +7,7 @@ import { UserQueryRepository } from './entities/user.query.repository';
 import { UserEntity } from './entities/user.entity';
 import * as jwt from 'jsonwebtoken';
 import { isEmpty } from 'class-validator';
-import { SilentRefreshAuthOutputDto } from './dto/user.auth.dto';
+import { LogoutAuthOutputDto, SilentRefreshAuthOutputDto } from './dto/user.auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -66,7 +66,6 @@ export class AuthService {
         eid_access_token,
       };
     } catch (error) {
-      console.log(error);
       return { ok: false, error: '카카오 로그인 인증을 실패 하였습니다.' };
     }
   }
@@ -111,6 +110,20 @@ export class AuthService {
       };
     } catch (error) {
       return { ok: false, error: '로그인 연장에 실패하였습니다.' };
+    }
+  }
+
+  async kakaoLogout(user, res): Promise<LogoutAuthOutputDto> {
+    try {
+      if (isEmpty(user.id)) return { ok: false, error: '접근 권한을 가지고 있지 않습니다' };
+
+      const loginUser = await this.userQueryRepository.findId(user.id);
+      loginUser.eid_refresh_token = null;
+      await this.userQueryRepository.save(loginUser);
+      res.clearCookie('refreshToken');
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: '로그아웃을 실패하였습니다' };
     }
   }
 }

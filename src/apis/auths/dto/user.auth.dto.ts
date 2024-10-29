@@ -3,3 +3,8 @@ export class SilentRefreshAuthOutputDto {
   eid_access_token?: string;
   error?: string;
 }
+
+export class LogoutAuthOutputDto {
+  ok: boolean;
+  error?: string;
+}
