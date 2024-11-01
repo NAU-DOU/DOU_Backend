@@ -8,6 +8,7 @@ import { UserEntity } from './entities/user.entity';
 import * as jwt from 'jsonwebtoken';
 import { isEmpty } from 'class-validator';
 import { LogoutAuthOutputDto, SilentRefreshAuthOutputDto } from './dto/user.auth.dto';
+import moment from 'moment-timezone';
 
 @Injectable()
 export class AuthService {
@@ -47,9 +48,10 @@ export class AuthService {
       });
       /* refreshToken 필드 업데이트 */
       findUser.eid_refresh_token = eid_refresh_token;
-      await this.userQueryRepository.save(findUser);
 
       // 로그인 시 access at 업데이트
+      findUser.access_at = new Date(new Date().getTime() + 9 * 60 * 60 * 1000); // KST는 UTC+9
+      await this.userQueryRepository.save(findUser);
 
       // 쿠키 설정
       const now = new Date();
