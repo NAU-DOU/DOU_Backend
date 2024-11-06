@@ -5,16 +5,17 @@ import { RoomEntity } from './entities/room.entity';
 import { GetRoomDto, GetRoomSelectDto } from './dto/get-room.dto';
 import { SetRoomInputDto, UpdateRoomInputDto } from './dto/set-room.dto';
 import { RoomsService } from './rooms.service';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { resolveObjectURL } from 'buffer';
 import { RoomPatchResponseDto, RoomResponseDto } from './dto/room-response.dto';
 
+@ApiTags('Room (날짜 관련 API) - 날짜 별로 분류')
 @Controller('room')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   /**
-   * Room의 모든 데이터 가져오기 (roomId 순서대로 전달) - 가장 최신 것부터
+   * ## Room의 모든 데이터 가져오기 (roomId 순서대로 전달) - 가장 최신 것부터
    * - cursorId: 없이 보내도 됨 (맨 처음 조회 시), 이후 데이터에 전달되는 cursorId 그대로 쿼리에 추가하면 됨
    * - limit: 몇 개씩 가져올 지 (default: 10개)
    */

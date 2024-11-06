@@ -33,7 +33,9 @@ async function bootstrap(): Promise<string> {
       'access-token',
     )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    deepScanRoutes: true,
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
