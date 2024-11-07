@@ -5,7 +5,7 @@ import { GetSentimentInputDto } from './dto/get-sentiment.dto';
 import { SentimentsService } from './sentiments.service';
 import { statusCode } from 'src/commons/exception/status.code';
 import { Response } from 'express';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('감정 분석 모델 사용 API')
 @Controller('sentiment')
@@ -15,6 +15,7 @@ export class SentimentsController {
   /**
    * ## 감정 분석 모델 서버가 잘 돌아가는지 여부 확인용
    */
+  @ApiOperation({ summary: '감정 분석 모델 서버 작동 테스트' })
   @Get()
   getAll(@Res() response: Response) {
     response.status(200).json({
@@ -36,6 +37,7 @@ export class SentimentsController {
    * - **sentiment**: 감정 (string)
    * - **sentiment_idx**: 위의 감정에 대응하는 숫자값(인덱스) (number)
    * */
+  @ApiOperation({ summary: '감정 분석 요청 API' })
   @ApiBody({ type: GetSentimentInputDto, description: '감정 분석을 위한 전달 내용' })
   @Post()
   async getSentimentResult(@Body() getSentimentInput: GetSentimentInputDto, @Res() response: Response) {
