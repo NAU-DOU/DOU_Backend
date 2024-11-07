@@ -65,10 +65,19 @@ export class RecordsService {
   // recordId
   async getRecordToRecordId(inputRecordDto: SetRecordInputRecordIdDto): Promise<GetRecordDto> {
     const { recordId } = inputRecordDto;
-    const record = await this.recordRepository.findOne({
-      where: { rec_id: recordId },
+    const record = await this.recordRepository
+      .createQueryBuilder('record')
+      .leftJoinAndSelect('record.room', 'room')
+      .where('record.rec_id = :recordId', { recordId })
+      .getOne();
+
+    return plainToClass(GetRecordDto, {
+      recordId: record.rec_id,
+      roomId: record.room.room_id,
+      recordSent: record.rec_sent,
+      recordSummary: record.rec_summary,
+      createdAt: record.created_at,
     });
-    return plainToClass(GetRecordDto, record);
   }
 
   async setRecord(setRecordInputDto: SetRecordInputDto): Promise<GetRecordInputDto> {

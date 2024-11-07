@@ -23,8 +23,19 @@ async function bootstrap(): Promise<string> {
     .setVersion('1.0')
     .addServer('http://localhost:3000/', 'Local Env')
     .addServer('https://dev.nau-dou.shop/', 'Dev Env')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        name: 'JWT',
+        in: 'header',
+      },
+      'access-token',
+    )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    deepScanRoutes: true,
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
