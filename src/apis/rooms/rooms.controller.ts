@@ -1,13 +1,14 @@
-import { Body, Controller, Get, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { response, Response } from 'express';
 import { statusCode } from 'src/commons/exception/status.code';
 import { RoomEntity } from './entities/room.entity';
 import { GetRoomDto, GetRoomSelectDto } from './dto/get-room.dto';
 import { SetRoomInputDto, UpdateRoomInputDto } from './dto/set-room.dto';
 import { RoomsService } from './rooms.service';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { resolveObjectURL } from 'buffer';
 import { RoomPatchResponseDto, RoomResponseDto } from './dto/room-response.dto';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 @ApiTags('Room (날짜 관련 API) - 날짜 별로 분류')
 @Controller('room')
@@ -58,6 +59,7 @@ export class RoomsController {
     @Query('limit') limit: number = 10,
     @Res() response: Response,
   ) {
+    // TODO: JWT에서 사용자 데이터 꺼내서 사용하는게 좋을 것 같긴 하다..
     const result: { data: GetRoomSelectDto[]; cursor: number } = await this.roomsService.findRoomsToUser(
       cursorId,
       limit,
@@ -138,7 +140,9 @@ export class RoomsController {
     description: 'Room이 성공적으로 생성되었습니다.',
     type: RoomResponseDto,
   })
+  @ApiBearerAuth() // Bearer 인증 표시
   @Post('')
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async setRoomToId(@Body() setRoomInputDto: SetRoomInputDto, @Res() response: Response) {
     const result: RoomResponseDto = await this.roomsService.setRoomToId(setRoomInputDto);
 
@@ -166,7 +170,9 @@ export class RoomsController {
     description: 'Room 데이터가 성공적으로 수정되었습니다.',
     type: RoomPatchResponseDto,
   })
+  @ApiBearerAuth() // Bearer 인증 표시
   @Patch('')
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async updateRoomSent(@Body() updateRoomInputDto: UpdateRoomInputDto, @Res() response: Response) {
     const result: RoomPatchResponseDto = await this.roomsService.updateRoomToId(updateRoomInputDto);
 

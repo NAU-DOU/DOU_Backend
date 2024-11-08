@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { SetChatInputDto } from './dto/set-chat.dto';
 import { statusCode } from 'src/commons/exception/status.code';
 import { ChatsService } from './chats.service';
 import { GetChatDto, GetChatInputDto } from './dto/get-chat.dto';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 @ApiTags('Chat (감정 대화 로그)')
 @Controller('chat')
@@ -17,14 +18,14 @@ export class ChatsController {
    * 여러 개의 Chat 데이터를 한 번에 List 형태로 전달받아 등록
    *
    * 필요 데이터:
-   * - **userId**: 사용자 ID (int)
-   * - **roomId**: 대화 방 ID (int)
-   * - **recordId**: 기록 ID (int)
-   * - **isUser**: 발화자 유형 (int)
+   * - **userId**: 사용자 ID (number)
+   * - **roomId**: 대화 방 ID (number)
+   * - **recordId**: 기록 ID (number)
+   * - **isUser**: 발화자 유형 (number)
    *   - 1이면 사용자
    *   - 0이면 로봇 (GPT/도우)
    * - **chatContext**: 채팅 내용 (string)
-   * - **chatSent**: 감정 값 (int)
+   * - **chatSent**: 감정 값 (number)
    *   - 채팅에 포함된 감정 점수
    * */
   @ApiOperation({ summary: '감정 대화 저장 API' })
@@ -34,7 +35,9 @@ export class ChatsController {
     description: '성공적으로 감정 대화를 불러옴',
     type: [GetChatInputDto], // 배열 형태로 GetChatInputDto 사용
   })
+  @ApiBearerAuth() // Bearer 인증 표시
   @Post('')
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async setChat(@Body() setChatInputDto: SetChatInputDto[], @Res() response: Response) {
     const result: GetChatInputDto[] = await this.chatsService.setChat(setChatInputDto);
 

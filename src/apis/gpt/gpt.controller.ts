@@ -1,11 +1,12 @@
-import { Body, Controller, Post, Get, Res, Logger, Inject, Catch } from '@nestjs/common';
+import { Body, Controller, Post, Get, Res, Logger, Inject, Catch, UseGuards } from '@nestjs/common';
 
 import { statusCode } from 'src/commons/exception/status.code';
 import { Response } from 'express';
 
 import { GptService } from './gpt.service';
 import { GetGptInputDto, GetGptSummaryDto } from './dto/get-gpt.dto';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 @ApiTags('GPT API (도우 응답 관련)')
 @Controller('gpt')
@@ -33,7 +34,9 @@ export class GptController {
    */
   @ApiOperation({ summary: 'GPT 응답(도우 응답) API' })
   @ApiBody({ type: GetGptInputDto, description: 'GPT 응답을 위한 전달 내용' })
+  @ApiBearerAuth()
   @Post()
+  @UseGuards(JwtKakaoAuthGuard)
   async getGPTResponseController(@Body() getGPTRequest: GetGptInputDto, @Res() response: Response) {
     const result: object = await this.gptService.getGPTResponce(getGPTRequest);
 
@@ -51,10 +54,11 @@ export class GptController {
    * - **userId** (number): 사용자 아이디 번호 (인덱스 번호)
    *  - **context** (string): 요약할 문단 (STT 변환 후 해당 글 전체를 전달해주기만 하면 됨)
    */
-
-  @Post('summary')
   @ApiOperation({ summary: 'GPT를 이용한 녹음 내용 요약 API' })
   @ApiBody({ type: GetGptSummaryDto, description: 'GPT를 이용하여 내용 요약' })
+  @ApiBearerAuth()
+  @UseGuards(JwtKakaoAuthGuard)
+  @Post('summary')
   async getGPTSummaryController(@Body() getGPTRequest: GetGptSummaryDto, @Res() response: Response) {
     const result: object = await this.gptService.getGPTSummary(getGPTRequest);
 

@@ -26,6 +26,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   controllers: [AuthController],
   providers: [AuthService, UserQueryRepository, KakaoStrategy, JwtKakaoAuthGuard],
-  exports: [UserQueryRepository],
+  exports: [UserQueryRepository, JwtModule, JwtKakaoAuthGuard],
 })
 export class AuthModule {}
