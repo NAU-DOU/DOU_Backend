@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Response, response } from 'express';
 import { statusCode } from 'src/commons/exception/status.code';
 import { GetRecordDto, GetRecordInputDto, GetRecordSelectDto, GetRecordUpdateDto } from './dto/get-record.dto';
 import { SetRecordInputDto, SetRecordInputRecordIdDto, UpdateRecordDto } from './dto/set-record.dto';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 @ApiTags('Record (채팅방 관련 API) - 특정 Room(날짜) 속 생성되는 대화방')
 @Controller('record')
@@ -120,7 +121,9 @@ export class RecordsController {
     description: '성공적으로 Record를 등록함',
     type: GetRecordInputDto,
   })
+  @ApiBearerAuth() // Bearer 인증 표시
   @Post()
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async setRecord(@Body() setRecordInputDto: SetRecordInputDto, @Res() response: Response) {
     const result: GetRecordInputDto = await this.recordsService.setRecord(setRecordInputDto);
 
@@ -145,7 +148,9 @@ export class RecordsController {
     description: '성공적으로 Record를 수정함',
     type: GetRecordInputDto,
   })
+  @ApiBearerAuth() // Bearer 인증 표시
   @Patch()
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async updateRecord(@Body() updateRecordDto: UpdateRecordDto, @Res() response: Response) {
     const result: GetRecordUpdateDto = await this.recordsService.updateRecord(updateRecordDto);
 

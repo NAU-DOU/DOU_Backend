@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KakaoRequest } from './interface/kakao.interface';
-import { Response, Request } from 'express';
+import e, { Response, Request } from 'express';
 import { UserQueryRepository } from './entities/user.query.repository';
 import { UserEntity } from './entities/user.entity';
 import * as jwt from 'jsonwebtoken';
@@ -65,7 +65,9 @@ export class AuthService {
       });
       return {
         ok: true,
-        eid_access_token,
+        eid_access_token: eid_access_token,
+        userId: findUser.user_id,
+        userNickname: findUser.user_nickname,
       };
     } catch (error) {
       return { ok: false, error: '카카오 로그인 인증을 실패 하였습니다.' };
@@ -78,7 +80,7 @@ export class AuthService {
       const getRefreshToken = req.cookies['eid_refresh_token'];
 
       if (isEmpty(getRefreshToken)) {
-        return { ok: false };
+        return { ok: false, error: 'not have refresh token' };
       }
       let userId: string | string[] | null;
       jwt.verify(
@@ -86,6 +88,7 @@ export class AuthService {
         this.configService.get('JWT_REFRESH_TOKEN_SECRET_KEY'),
         (err: jwt.VerifyErrors | null, decoded: jwt.JwtPayload | undefined) => {
           if (err) {
+            console.error(err);
             res.clearCookie('eid_refresh_token');
             return { ok: false, error: '토큰이 유효하지 않습니다. 로그인이 필요합니다' };
           }
@@ -94,16 +97,14 @@ export class AuthService {
       );
 
       // 로그아웃 후에는 silent Refresh 무시
-      const loginUser = await this.userQueryRepository.findId(+userId); // userId를 숫자형으로 변환하기 위함
-
-      // accessToken 재발급
+      const loginUser = await this.userQueryRepository.findId(+userId); // userId를 숫자형으로 변환하기 위함      // accessToken 재발급
       const payload = {
         id: loginUser.user_id,
         nickname: loginUser.user_nickname,
       };
 
-      const eid_access_token = jwt.sign(payload, this.configService.get('JWT_REFRESH_TOKEN_SECRET_KEY'), {
-        expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+      const eid_access_token = jwt.sign(payload, this.configService.get('JWT_ACCESS_TOKEN_SECRET_KEY'), {
+        expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
       });
 
       return {

@@ -5,6 +5,8 @@ import { RoomEntity } from '../rooms/entities/room.entity';
 import { ChatsController } from './chats.controller';
 import { ChatsService } from './chats.service';
 import { RecordEntity } from '../records/entities/record.entity';
+import { AuthModule } from '../auths/auth.module';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 /**
  * 채팅(세부 대화 내용_로그) 관련 내용
@@ -14,8 +16,8 @@ import { RecordEntity } from '../records/entities/record.entity';
  * */
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatEntity, RecordEntity, RoomEntity])],
+  imports: [TypeOrmModule.forFeature([ChatEntity, RecordEntity, RoomEntity]), AuthModule],
   controllers: [ChatsController],
-  providers: [ChatsService],
+  providers: [ChatsService, JwtKakaoAuthGuard],
 })
 export class ChatsModule {}

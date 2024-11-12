@@ -47,6 +47,7 @@ export class AuthController {
     response.status(200).json({
       ...statusCode.SUCCESS,
       data: result,
+      // TODO: 사용자 ID, 사용자 이름 수정하기
     });
   }
 
@@ -58,9 +59,11 @@ export class AuthController {
    * - ### 실제 Swagger UI 에서는 쿠키를 테스트할 수가 없어서 **브라우저나 Postman/Insomnia로 직접 쿠키를 포함**해서 테스트 해야 함!
    */
   @ApiTags('Kakao Auth (카카오 소셜로그인)')
+  @ApiBearerAuth() // Bearer 인증 표시
   @ApiCookieAuth('eid_refresh_token') // 쿠키 인증 추가
   @ApiOperation({ summary: '리프레시 토큰 요청 API' })
   @Post('kakao/refresh')
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async silentKakaoRefresh(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const result = await this.authService.silentKakaoRefresh(request, response);
     response.status(200).json({
@@ -71,13 +74,13 @@ export class AuthController {
 
   /**
    * ## 로그아웃
-   * - Bearer <JWT 토큰> 형식으로 AWT 토큰 전달이 필요해용
+   * - Bearer <JWT 토큰> 형식으로 JWT 토큰 전달이 필요해용
    */
   @ApiTags('Kakao Auth (카카오 소셜로그인)')
-  @ApiBearerAuth()
+  @ApiBearerAuth() // Bearer 인증 표시
   @ApiOperation({ summary: '카카오 로그아웃 API' })
   @Post('kakao/logout')
-  @UseGuards(JwtKakaoAuthGuard)
+  @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async kakaoLogout(@Res({ passthrough: true }) response: Response, @CurrentUser() user) {
     const result = await this.authService.kakaoLogout(user, response);
 

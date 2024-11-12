@@ -5,6 +5,8 @@ import { RoomsService } from './rooms.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomEntity } from './entities/room.entity';
 import { UserEntity } from '../auths/entities/user.entity';
+import { AuthModule } from '../auths/auth.module';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 /**
  * 녹음 관련 내용
@@ -14,8 +16,8 @@ import { UserEntity } from '../auths/entities/user.entity';
  * */
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RoomEntity, UserEntity])],
+  imports: [TypeOrmModule.forFeature([RoomEntity, UserEntity]), AuthModule],
   controllers: [RoomsController],
-  providers: [RoomsService],
+  providers: [RoomsService, JwtKakaoAuthGuard],
 })
 export class RoomsModule {}

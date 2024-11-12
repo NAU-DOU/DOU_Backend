@@ -1,11 +1,12 @@
-import { Body, Controller, Post, Get, Res, Logger, Inject } from '@nestjs/common';
+import { Body, Controller, Post, Get, Res, Logger, Inject, UseGuards } from '@nestjs/common';
 
 import { GetSentimentInputDto } from './dto/get-sentiment.dto';
 // import { SentimentResult } from './interfaces/sentiments-service.interface'; // NOTE: 인터페이스를 어디에다 쓰는지 좀 알아봐야 할 필요성이 있음
 import { SentimentsService } from './sentiments.service';
 import { statusCode } from 'src/commons/exception/status.code';
 import { Response } from 'express';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtKakaoAuthGuard } from '../auths/strategies/kakao.strategy';
 
 @ApiTags('감정 분석 모델 사용 API')
 @Controller('sentiment')
@@ -39,7 +40,9 @@ export class SentimentsController {
    * */
   @ApiOperation({ summary: '감정 분석 요청 API' })
   @ApiBody({ type: GetSentimentInputDto, description: '감정 분석을 위한 전달 내용' })
+  @ApiBearerAuth()
   @Post()
+  @UseGuards(JwtKakaoAuthGuard)
   async getSentimentResult(@Body() getSentimentInput: GetSentimentInputDto, @Res() response: Response) {
     const result: object = await this.sentimentsService.getSentimentResult(getSentimentInput);
 
