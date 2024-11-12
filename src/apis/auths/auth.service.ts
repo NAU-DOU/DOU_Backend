@@ -93,7 +93,6 @@ export class AuthService {
             return { ok: false, error: '토큰이 유효하지 않습니다. 로그인이 필요합니다' };
           }
           userId = decoded.aud;
-          console.log(decoded.aud);
         },
       );
 
@@ -113,7 +112,6 @@ export class AuthService {
         eid_access_token,
       };
     } catch (error) {
-      console.error(error);
       return { ok: false, error: '로그인 연장에 실패하였습니다.' };
     }
   }
