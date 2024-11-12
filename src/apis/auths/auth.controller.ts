@@ -47,6 +47,7 @@ export class AuthController {
     response.status(200).json({
       ...statusCode.SUCCESS,
       data: result,
+      // TODO: 사용자 ID, 사용자 이름 수정하기
     });
   }
 

@@ -53,11 +53,12 @@ export class JwtKakaoAuthGuard implements CanActivate {
     try {
       const secret = process.env.JWT_ACCESS_TOKEN_SECRET_KEY;
       const payload = await this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET_KEY'),
+        secret: secret,
       }); // JWT 검증
       request.user = payload; // 검증된 사용자 정보를 요청 객체에 추가
       return true; // 인증 성공
     } catch (error) {
+      console.error(error);
       throw new UnauthorizedException('Invalid access token'); // 인증 실패
     }
   }
