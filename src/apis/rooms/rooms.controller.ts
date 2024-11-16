@@ -140,7 +140,7 @@ export class RoomsController {
     description: 'Room이 성공적으로 생성되었습니다.',
     type: RoomResponseDto,
   })
-  @ApiBearerAuth() // Bearer 인증 표시
+  @ApiBearerAuth('access-token') // Bearer 인증 표시
   @Post('')
   @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async setRoomToId(@Body() setRoomInputDto: SetRoomInputDto, @Res() response: Response) {
@@ -170,7 +170,7 @@ export class RoomsController {
     description: 'Room 데이터가 성공적으로 수정되었습니다.',
     type: RoomPatchResponseDto,
   })
-  @ApiBearerAuth() // Bearer 인증 표시
+  @ApiBearerAuth('access-token') // Bearer 인증 표시
   @Patch('')
   @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async updateRoomSent(@Body() updateRoomInputDto: UpdateRoomInputDto, @Res() response: Response) {

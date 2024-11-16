@@ -40,7 +40,7 @@ export class SentimentsController {
    * */
   @ApiOperation({ summary: '감정 분석 요청 API' })
   @ApiBody({ type: GetSentimentInputDto, description: '감정 분석을 위한 전달 내용' })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token') // Bearer 인증 표시
   @Post()
   @UseGuards(JwtKakaoAuthGuard)
   async getSentimentResult(@Body() getSentimentInput: GetSentimentInputDto, @Res() response: Response) {
