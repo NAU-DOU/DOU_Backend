@@ -19,6 +19,7 @@ import { RecordsModule } from './apis/records/records.module';
 import { RoomsModule } from './apis/rooms/rooms.module';
 import { ChatsModule } from './apis/chats/chats.module';
 import { AuthModule } from './apis/auths/auth.module';
+import { MyPageModule } from './apis/mypage/mypage.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { AuthModule } from './apis/auths/auth.module';
     RoomsModule, // 방 관련 모듈 - 대화
     ChatsModule, // Chat 관련 모듈 - log
     AuthModule, // 소셜로그인 관련 모듈
+    MyPageModule, // 마이페이지 관련 모듈
   ],
   controllers: [],
   providers: [

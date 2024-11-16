@@ -121,7 +121,7 @@ export class RecordsController {
     description: '성공적으로 Record를 등록함',
     type: GetRecordInputDto,
   })
-  @ApiBearerAuth() // Bearer 인증 표시
+  @ApiBearerAuth('access-token') // Bearer 인증 표시
   @Post()
   @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async setRecord(@Body() setRecordInputDto: SetRecordInputDto, @Res() response: Response) {
@@ -148,7 +148,7 @@ export class RecordsController {
     description: '성공적으로 Record를 수정함',
     type: GetRecordInputDto,
   })
-  @ApiBearerAuth() // Bearer 인증 표시
+  @ApiBearerAuth('access-token') // Bearer 인증 표시
   @Patch()
   @UseGuards(JwtKakaoAuthGuard) // JWT 인증 검사
   async updateRecord(@Body() updateRecordDto: UpdateRecordDto, @Res() response: Response) {

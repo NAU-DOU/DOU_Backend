@@ -34,7 +34,7 @@ export class GptController {
    */
   @ApiOperation({ summary: 'GPT 응답(도우 응답) API' })
   @ApiBody({ type: GetGptInputDto, description: 'GPT 응답을 위한 전달 내용' })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @Post()
   @UseGuards(JwtKakaoAuthGuard)
   async getGPTResponseController(@Body() getGPTRequest: GetGptInputDto, @Res() response: Response) {
@@ -56,7 +56,7 @@ export class GptController {
    */
   @ApiOperation({ summary: 'GPT를 이용한 녹음 내용 요약 API' })
   @ApiBody({ type: GetGptSummaryDto, description: 'GPT를 이용하여 내용 요약' })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtKakaoAuthGuard)
   @Post('summary')
   async getGPTSummaryController(@Body() getGPTRequest: GetGptSummaryDto, @Res() response: Response) {
