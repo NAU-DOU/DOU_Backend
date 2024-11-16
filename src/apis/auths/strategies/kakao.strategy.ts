@@ -58,7 +58,6 @@ export class JwtKakaoAuthGuard implements CanActivate {
       request.user = payload; // 검증된 사용자 정보를 요청 객체에 추가
       return true; // 인증 성공
     } catch (error) {
-      console.error(error);
       throw new UnauthorizedException('Invalid access token'); // 인증 실패
     }
   }
