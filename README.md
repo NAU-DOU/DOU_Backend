@@ -54,14 +54,8 @@ AI 감정 분석 도우미 서비스, DOU의 메인 API 서버 레포지토리
   - 설명 및 예시 데이터 보강
   - API 연동 오류 0건 달성
 
-## 🏗️ 서비스 아키텍처
-``` mermaid
-graph TB
-    A[Client<br/>Android] <--> B[API Server<br/>NestJS]
-    B <--> C[ML Server<br/>Flask]
-    B <--> E[GPT-3.5 Turbo API]
-    B --> D[(Database<br/>MySQL<br/>-AWS RDS-)]
-```
+## 🏗️ 배포 아키텍처
+<img width="577" height="313" alt="image" src="https://github.com/user-attachments/assets/fde15cfb-bcf9-45ca-9041-f0104e2bc60f" />
 
 ## 📂 프로젝트 구조
 ``` bash
